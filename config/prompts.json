@@ -1,0 +1,86 @@
+{
+  "welcome_message": "Welcome to Skillmotion AI Assistant. I can help you with: Creating your Skill Profile, Performing Skill Gap Analysis, Generating Personalized Content Plans, Executing Assessments, Analyzing Your Resume for a Job Role. Please say or select an option.",
+  "options": [
+    {
+      "id": "skill_profile",
+      "title": "Create Skill Profile",
+      "description": "Build a comprehensive skill profile based on your experience and goals"
+    },
+    {
+      "id": "gap_analysis",
+      "title": "Skill Gap Analysis",
+      "description": "Identify gaps between your current skills and target requirements"
+    },
+    {
+      "id": "content_plan",
+      "title": "Personalized Content Plan",
+      "description": "Generate a customized learning plan based on your skill gaps"
+    },
+    {
+      "id": "assessment",
+      "title": "Execute Assessment",
+      "description": "Take skill assessments to evaluate your current capabilities"
+    },
+    {
+      "id": "resume_analysis",
+      "title": "Resume Analysis",
+      "description": "Analyze your resume against specific job requirements"
+    }
+  ],
+  "prompts": {
+    "skill_extraction": "Extract all technical skills, soft skills, and competencies from the following resume text. Format the output as a structured list with categories:\n\nResume Text: {resume_text}\n\nPlease categorize skills into: Technical Skills, Soft Skills, Certifications, Tools/Technologies, and Years of Experience for each skill where identifiable.",
+    "gap_analysis": "Perform a comprehensive skill gap analysis for the role of {job_role}. Compare the candidate's current skills with the required skills for this position:\n\nCandidate Skills: {current_skills}\n\nRequired Skills for {job_role}: {required_skills}\n\nProvide:\n1. Skills gap analysis\n2. Strengths and areas for improvement\n3. Prioritized learning recommendations\n4. Estimated timeline for skill development\n5. Specific courses or resources recommendations",
+    "learning_plan": "Create a personalized 90-day learning plan for closing the identified skill gaps:\n\nSkill Gaps: {skill_gaps}\nCurrent Level: {current_level}\nTarget Role: {target_role}\n\nProvide a detailed week-by-week plan with:\n1. Learning objectives\n2. Recommended resources\n3. Practice projects\n4. Assessment milestones\n5. Time allocation per skill",
+    "skill_profile": "Create a comprehensive skill profile based on the following information:\n\nBackground: {background}\nExperience: {experience}\nGoals: {goals}\n\nGenerate:\n1. Current skill inventory\n2. Skill proficiency levels\n3. Learning preferences\n4. Career trajectory recommendations\n5. Skill development priorities"
+  },
+  "job_skills_database": {
+    "software_developer": [
+      "Programming Languages (Python, JavaScript, Java, C++)",
+      "Web Development (HTML, CSS, React, Node.js)",
+      "Database Management (SQL, NoSQL)",
+      "Version Control (Git, GitHub)",
+      "Software Testing",
+      "Agile Methodologies",
+      "Problem Solving",
+      "Debugging",
+      "Code Review",
+      "API Development"
+    ],
+    "data_scientist": [
+      "Python/R Programming",
+      "Machine Learning",
+      "Statistics",
+      "Data Visualization",
+      "SQL",
+      "Deep Learning",
+      "Data Cleaning",
+      "Feature Engineering",
+      "Model Deployment",
+      "Business Intelligence"
+    ],
+    "product_manager": [
+      "Product Strategy",
+      "Market Research",
+      "User Experience Design",
+      "Data Analysis",
+      "Project Management",
+      "Stakeholder Management",
+      "Roadmap Planning",
+      "A/B Testing",
+      "Customer Development",
+      "Technical Understanding"
+    ],
+    "marketing_manager": [
+      "Digital Marketing",
+      "Content Strategy",
+      "SEO/SEM",
+      "Social Media Marketing",
+      "Email Marketing",
+      "Analytics",
+      "Brand Management",
+      "Campaign Management",
+      "Marketing Automation",
+      "Customer Segmentation"
+    ]
+  }
+}

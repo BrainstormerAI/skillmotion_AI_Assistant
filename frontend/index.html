@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skillmotion.AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+
+        .chat-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .option-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .option-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .option-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            background: rgba(102, 126, 234, 0.05);
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.assistant {
+            text-align: left;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message.assistant .message-bubble {
+            background: #f8f9ff;
+            color: #333;
+            border: 1px solid #e8f0ff;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e8f0ff;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .voice-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .voice-btn.active {
+            animation: pulse 2s infinite;
+            background: #ff4757;
+        }
+
+        .voice-btn.listening {
+            animation: voiceAnimation 1.5s infinite alternate;
+        }
+
+        .status-indicator {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .status-listening {
+            background: #e8f5e8;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .status-speaking {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #2196f3;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .job-role-input {
+            margin-top: 20px;
+        }
+
+        .job-role-input input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e8f0ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .analysis-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .analysis-section {
+            margin-bottom: 20px;
+        }
+
+        .analysis-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .analysis-section p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes voiceAnimation {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            100% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .chat-area {
+                height: 500px;
+            }
+
+            .option-card {
+                padding: 15px;
+            }
+
+            .message-bubble {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">🧠 Skillmotion.AI</div>
+            <div class="subtitle">Your AI-Powered Career Development Assistant</div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <h3 style="margin-bottom: 20px; color: #667eea;">Available Services</h3>
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be populated dynamically -->
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📄</div>
+                    <div>
+                        <strong>Upload Your Resume</strong>
+                        <p>Drag & drop your PDF resume here or click to browse</p>
+                    </div>
+                    <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                </div>
+
+                <div class="job-role-input hidden" id="jobRoleInput">
+                    <label for="jobRole"><strong>Target Job Role:</strong></label>
+                    <input type="text" id="jobRole" placeholder="e.g., Software Developer, Data Scientist, Product Manager">
+                    <button class="btn btn-primary" id="analyzeBtn" style="margin-top: 10px; width: 100%;">
+                        Analyze Resume
+                    </button>
+                </div>
+            </aside>
+
+            <section class="chat-area">
+                <div class="status-indicator hidden" id="statusIndicator"></div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message assistant">
+                        <div class="message-bubble">
+                            <div class="loading"></div> Initializing Skillmotion AI Assistant...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" class="input-field" id="messageInput" placeholder="Type your message or use voice input...">
+                    <button class="btn btn-secondary voice-btn" id="voiceBtn" title="Voice Input">🎤</button>
+                    <button class="btn btn-primary" id="sendBtn">Send</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        class SkillmotionAssistant {
+            constructor() {
+                this.apiBaseUrl = 'http://localhost:5000/api';
+                this.isListening = false;
+                this.recognition = null;
+                this.synthesis = window.speechSynthesis;
+                this.currentAudio = null;
+                this.uploadedResume = null;
+                this.extractedSkills = null;
+                
+                this.initializeElements();
+                this.initializeSpeechRecognition();
+                this.initializeEventListeners();
+                this.loadWelcomeMessage();
+            }
+
+            initializeElements() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.voiceBtn = document.getElementById('voiceBtn');
+                this.statusIndicator = document.getElementById('statusIndicator');
+                this.optionsGrid = document.getElementById('optionsGrid');
+                this.uploadArea = document.getElementById('uploadArea');
+                this.fileInput = document.getElementById('fileInput');
+                this.jobRoleInput = document.getElementById('jobRoleInput');
+                this.jobRole = document.getElementById('jobRole');
+                this.analyzeBtn = document.getElementById('analyzeBtn');
+            }
+
+            initializeSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window) {
+                    this.recognition = new webkitSpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                        this.voiceBtn.classList.add('listening');
+                        this.showStatus('Listening... Speak now', 'status-listening');
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.messageInput.value = transcript;
+                        this.sendMessage();
+                    };
+
+                    this.recognition.onend = () => {
+                        this.isListening = false;
+                        this.voiceBtn.classList.remove('listening');
+                        this.hideStatus();
+                    };
+
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.showStatus('Voice recognition error. Please try again.', 'status-processing');
+                        setTimeout(() => this.hideStatus(), 3000);
+                    };
+                }
+            }
+
+            initializeEventListeners() {
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+
+                this.voiceBtn.addEventListener('click', () => this.toggleVoiceRecognition());
+
+                // File upload events
+                this.uploadArea.addEventListener('click', () => this.fileInput.click());
+                this.uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.classList.add('dragover');
+                });
+                this.uploadArea.addEventListener('dragleave', () => {
+                    this.uploadArea.classList.remove('dragover');
+                });
+                this.uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.handleFileUpload(files[0]);
+                    }
+                });
+
+                this.fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        this.handleFileUpload(e.target.files[0]);
+                    }
+                });
+
+                this.analyzeBtn.addEventListener('click', () => this.analyzeResume());
+            }
+
+            async loadWelcomeMessage() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/welcome`);
+                    const data = await response.json();
+                    
+                    this.clearInitialMessage();
+                    this.addMessage(data.message, 'assistant');
+                    this.populateOptions(data.options);
+                    
+                    // Play welcome audio if available
+                    if (data.audio_url) {
+                        this.playAudio(`${this.apiBaseUrl.replace('/api', '')}${data.audio_url}`);
+                    }
+                } catch (error) {
+                    console.error('Error loading welcome message:', error);
+                    this.clearInitialMessage();
+                    this.addMessage('Welcome to Skillmotion AI Assistant! How can I help you today?', 'assistant');
+                }
+            }
+
+            populateOptions(options) {
+                this.optionsGrid.innerHTML = '';
+                
+                options.forEach(option => {
+                    const optionCard = document.createElement('div');
+                    optionCard.className = 'option-card';
+                    optionCard.dataset.optionId = option.id;
+                    
+                    optionCard.innerHTML = `
+                        <div class="option-title">${option.title}</div>
+                        <div class="option-description">${option.description}</div>
+                    `;
+                    
+                    optionCard.addEventListener('click', () => this.selectOption(option));
+                    this.optionsGrid.appendChild(optionCard);
+                });
+            }
+
+            selectOption(option) {
+                // Highlight selected option
+                document.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                document.querySelector(`[data-option-id="${option.id}"]`).classList.add('active');
+                
+                // Add user message
+                this.addMessage(`I'd like to ${option.title.toLowerCase()}`, 'user');
+                
+                // Handle specific option logic
+                if (option.id === 'resume_analysis') {
+                    this.addMessage('Great! Please upload your resume and specify the job role you\'re targeting. I\'ll provide a comprehensive analysis.', 'assistant');
+                } else {
+                    this.handleGeneralOption(option);
+                }
+            }
+
+            async handleGeneralOption(option) {
+                try {
+                    this.showStatus('Processing your request...', 'status-processing');
+                    
+                    const response = await fetch(`${this.apiBaseUrl}/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `I want to ${option.title.toLowerCase()}`,
+                            context: option.description
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    this.hideStatus();
+                    this.addMessage(data.response, 'assistant');
+                    
+                    if (data.audio_url) {
+                        this.playAudio(`${this.apiBaseUrl.replace('/api', '')}${data.audio_url}`);
+                    }
+                } catch (error) {
+                    console.error('Error processing option:', error);
+                    this.hideStatus();
+                    this.addMessage('I apologize, but I encountered an error. Please try again.', 'assistant');
+                }
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+
+                try {
+                    this.showStatus('Processing your message...', 'status-processing');
+                    
+                    const response = await fetch(`${this.apiBaseUrl}/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            context: this.extractedSkills ? `Resume skills: ${this.extractedSkills}` : ''
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    this.hideStatus();
+                    this.addMessage(data.response, 'assistant');
+                    
+                    if (data.audio_url) {
+                        this.playAudio(`${this.apiBaseUrl.replace('/api', '')}${data.audio_url}`);
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    this.hideStatus();
+                    this.addMessage('I apologize, but I encountered an error. Please try again.', 'assistant');
+                }
+            }
+
+            async handleFileUpload(file) {
+                if (file.type !== 'application/pdf') {
+                    alert('Please upload a PDF file.');
+                    return;
+                }
+
+                this.showStatus('Uploading and processing resume...', 'status-processing');
+                
+                const formData = new FormData();
+                formData.append('resume', file);
+
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/upload-resume`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.uploadedResume = data.resume_text;
+                        this.extractedSkills = data.extracted_skills;
+                        
+                        this.hideStatus();
+                        this.addMessage('Resume uploaded and processed successfully! I\'ve extracted your skills and experience.', 'assistant');
+                        this.addMessage(`Here are the skills I found in your resume: ${data.extracted_skills.substring(0, 200)}...`, 'assistant');
+                        
+                        // Show job role input
+                        this.jobRoleInput.classList.remove('hidden');
+                        
+                        // Update upload area
+                        this.uploadArea.innerHTML = `
+                            <div style="color: #27ae60;">
+                                ✅ Resume uploaded successfully!<br>
+                                <small>${file.name}</small>
+                            </div>
+                        `;
+                    } else {
+                        throw new Error(data.error || 'Upload failed');
+                    }
+                } catch (error) {
+                    console.error('Error uploading resume:', error);
+                    this.hideStatus();
+                    this.addMessage('Sorry, there was an error processing your resume. Please try again.', 'assistant');
+                }
+            }
+
+            async analyzeResume() {
+                const jobRole = this.jobRole.value.trim();
+                if (!jobRole) {
+                    alert('Please enter a target job role.');
+                    return;
+                }
+
+                if (!this.extractedSkills) {
+                    alert('Please upload a resume first.');
+                    return;
+                }
+
+                this.showStatus('Performing comprehensive resume analysis...', 'status-processing');
+
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/analyze-resume`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            job_role: jobRole,
+                            extracted_skills: this.extractedSkills
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    this.hideStatus();
+                    
+                    // Display analysis results
+                    this.addMessage(`Analysis complete for ${jobRole} position!`, 'assistant');
+                    this.displayAnalysisResults(data);
+                    
+                    if (data.audio_url) {
+                        this.playAudio(`${this.apiBaseUrl.replace('/api', '')}${data.audio_url}`);
+                    }
+                } catch (error) {
+                    console.error('Error analyzing resume:', error);
+                    this.hideStatus();
+                    this.addMessage('Sorry, there was an error analyzing your resume. Please try again.', 'assistant');
+                }
+            }
+
+            displayAnalysisResults(data) {
+                const analysisHtml = `
+                    <div class="analysis-results">
+                        <div class="analysis-section">
+                            <h3>🎯 Gap Analysis</h3>
+                            <p>${data.gap_analysis}</p>
+                        </div>
+                        <div class="analysis-section">
+                            <h3>📚 Learning Plan</h3>
+                            <p>${data.learning_plan}</p>
+                        </div>
+                        <div class="analysis-section">
+                            <h3>✅ Required Skills</h3>
+                            <p>${data.required_skills.join(', ')}</p>
+                        </div>
+                    </div>
+                `;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message assistant fade-in';
+                messageDiv.innerHTML = `<div class="message-bubble">${analysisHtml}</div>`;
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            toggleVoiceRecognition() {
+                if (!this.recognition) {
+                    alert('Voice recognition is not supported in your browser.');
+                    return;
+                }
+
+                if (this.isListening) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            }
+
+            playAudio(audioUrl) {
+                // Stop current audio if playing
+                if (this.currentAudio) {
+                    this.currentAudio.pause();
+                    this.currentAudio = null;
+                }
+
+                this.showStatus('🔊 Speaking...', 'status-speaking');
+                
+                this.currentAudio = new Audio(audioUrl);
+                this.currentAudio.play().then(() => {
+                    this.currentAudio.addEventListener('ended', () => {
+                        this.hideStatus();
+                        this.currentAudio = null;
+                    });
+                }).catch(error => {
+                    console.error('Error playing audio:', error);
+                    this.hideStatus();
+                });
+            }
+
+            addMessage(content, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                const bubbleDiv = document.createElement('div');
+                bubbleDiv.className = 'message-bubble';
+                bubbleDiv.textContent = content;
+                
+                messageDiv.appendChild(bubbleDiv);
+                this.chatMessages.appendChild(messageDiv);
+                
+                this.scrollToBottom();
+            }
+
+            clearInitialMessage() {
+                this.chatMessages.innerHTML = '';
+            }
+
+            showStatus(message, className) {
+                this.statusIndicator.textContent = message;
+                this.statusIndicator.className = `status-indicator ${className}`;
+                this.statusIndicator.classList.remove('hidden');
+            }
+
+            hideStatus() {
+                this.statusIndicator.classList.add('hidden');
+            }
+
+            scrollToBottom() {
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new SkillmotionAssistant();
+        });
+    </script>
+</body>
+</html>
